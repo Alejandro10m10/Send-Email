@@ -50,7 +50,12 @@ function validateForm(e){
         } else{
             paintField(field, false);
             showError('El email no es valido');
+            return;
         }
+    }
+
+    if(emailRegularExpression.test(emailTo.value) && emailRegularExpression.test( emailFrom.value ) && subject.value !== '' && message.value !== '' ){
+        enanbleSendBtn(true);
     }
 }
 
@@ -61,6 +66,17 @@ function paintField(field, value){
     } else{
         field.classList.remove('border', 'border-green-500');
         field.classList.add('border', 'border-red-500');
+        enanbleSendBtn(false);
+    }
+}
+
+function enanbleSendBtn(value){
+    if(value){
+        btnEnviar.disabled = false;
+        btnEnviar.classList.remove('cursor-not-allowed', 'opacity-50');
+    } else{
+        btnEnviar.disabled = true;
+        btnEnviar.classList.add('cursor-not-allowed', 'opacity-50');
     }
 }
 
