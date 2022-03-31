@@ -1,3 +1,5 @@
+
+
 body {
     background: #43cea2;
     background: -webkit-linear-gradient(to right, #185a9d, #43cea2);
@@ -38,6 +40,13 @@ form {
     padding: 3rem 0;
 }
 
+.message{
+  margin-bottom: 0;
+}
+
+.buttons{
+  margin-top: 40px;
+}
 
 .sk-chase {
     width: 40px;
