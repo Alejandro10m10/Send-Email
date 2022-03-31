@@ -1,2 +1,2 @@
 # Send-Email
-Project 12- JavaScript Course - Send an email
+Project 2- JavaScript Course - Send an email
