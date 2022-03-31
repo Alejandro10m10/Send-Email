@@ -5,9 +5,10 @@ const btnEnviar = document.querySelector('#enviar'),
       emailFrom = document.querySelector('#emailFrom'),
       subject = document.querySelector('#asunto'),
       message = document.querySelector('#mensaje'),
-      emailRegularExpression = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
-
+      emailRegularExpression = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+      buttonsContainer = document.querySelector('.buttons'),
+      btnResetForm = document.querySelector('#resetBtn'),
+      fields = document.querySelectorAll('.mb-10 input, .mb-10 textarea');
 
 init();
 
@@ -18,11 +19,20 @@ function init(){
 }
 
 function loadEventListeners(){
+    // When the app starts
     document.addEventListener('DOMContentLoaded', startApp); // Event fires when the initial HTML document has been completely loaded and parsed, without waiting for stylesheets, images, and subframes to finish loading.
+    
+    // Form fields
     emailTo.addEventListener('blur', validateForm);
     emailFrom.addEventListener('blur', validateForm);
     subject.addEventListener('blur', validateForm);
     message.addEventListener('blur', validateForm);
+    
+    // Reset Form
+    btnResetForm.addEventListener('click', resetForm)
+
+    // Send Email
+    form.addEventListener('submit', sendEmail);
 }
 
 function startApp(){
@@ -92,5 +102,59 @@ function showError(message){
 
     const errores = document.querySelectorAll('.error');
 
-    if(errores.length === 0) form.insertBefore(errorMessage, document.querySelector('.buttons'));
+    if(errores.length === 0) form.insertBefore(errorMessage, buttonsContainer);
+}
+
+function sendEmail(e){
+    e.preventDefault();
+    
+    // Show spinner
+    const spinner = document.querySelector('#spinner');
+
+    spinner.style.display = 'flex';
+    buttonsContainer.style.marginTop = '0';
+
+    enanbleSendBtn(false);
+    btnResetForm.classList.add('cursor-not-allowed', 'opacity-50');
+
+    fields.forEach( field => {
+        field.setAttribute('disabled', "");
+    });
+
+    // After 3 seconds hide spinner and show message
+    setTimeout( () => {
+        spinner.style.display = 'none';
+        buttonsContainer.style.marginTop = '40px';
+
+        // Confirmation message
+        const confirmationMessage = document.createElement('p');
+        confirmationMessage.textContent = 'El email se envió correctamente';
+        confirmationMessage.classList.add('border', 'bg-green-500', 'text-white', 'p-3', 'mt-8', 'mb-5', 'text-center');
+        form.insertBefore(confirmationMessage, buttonsContainer);
+
+        form.reset();
+        btnResetForm.classList.remove('cursor-not-allowed', 'opacity-50');
+
+        fields.forEach( field => {
+            field.removeAttribute('disabled');
+        });
+
+        setTimeout(() => {
+            confirmationMessage.remove(); // Delete confirmation message
+        }, 5000);
+
+    }, 3000);
+}
+
+function resetForm(e){
+    e.preventDefault();
+    deleteErrors();
+    emailTo.focus();
+
+    fields.forEach( field => {
+        field.classList.remove('border-red-500');
+        field.classList.remove('border-green-500');
+    });
+
+    form.reset();
 }
